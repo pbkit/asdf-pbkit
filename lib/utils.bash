@@ -44,7 +44,7 @@ get_source_url() {
 
 get_temp_dir() {
   local tmpdir
-  tmpdir="$(mktemp -d asdf-lucy.XXXX)"
+  tmpdir="$(mktemp -d asdf-pbkit.XXXX)"
 
   echo -n "$tmpdir"
 }
