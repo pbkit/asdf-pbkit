@@ -26,7 +26,7 @@ function download_version() {
   trap "rm -rf $tmpdir" EXIT
 
   (
-    echo "Downloading pbkit v$version binaries from $source_url"
+    echo "Downloading pbkit binaries from $source_url"
 
     curl -sSfLo "$tmpdir/pbkit.tar" "$tar_url"
     tar xf "$tmpdir/pbkit.tar" -C "$download_path"
