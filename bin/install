@@ -10,32 +10,24 @@ source "${plugin_dir}/lib/utils.bash"
 
 function install_version() {
   local version=$1
-  local install_path=$2
-
-  local platform
-  platform=$(get_platform)
-
-  local tar_url
-  tar_url=$(get_tar_url "$version" "$platform")
-
-  local tmpdir
-  tmpdir=$(get_temp_dir)
-  trap "rm -rf $tmpdir" EXIT
+  local download_path=$2
+  local install_path=$3
 
   (
+    echo "Installing pbkit v$version"
+
     mkdir -p "$install_path/bin"
 
-    echo "Installing pbkit v$version"
-    curl -sSfLo "$tmpdir/pbkit.tar" "$tar_url" || fail "Couldn't download the pbkit from $tar_url"
-    tar xf "$tmpdir/pbkit.tar" -C "$install_path/bin"
-
+    cp "$download_path/pb" "$install_path/bin/pb"
     chmod +x "$install_path/bin/pb"
+
+    cp "$download_path/pollapo" "$install_path/bin/pollapo"
     chmod +x "$install_path/bin/pollapo"
-  ) || (rm -rf "$install_path"; exit 1)
+  ) || (rm -rf "$install_path"; fail "Failed to install pbkit v$version")
 }
 
 if [ "$ASDF_INSTALL_TYPE" != "version" ]; then
   fail "asdf-pbkit currently supports release install only"
 fi
 
-install_version "$ASDF_INSTALL_VERSION" "$ASDF_INSTALL_PATH"
+install_version "$ASDF_INSTALL_VERSION" "$ASDF_DOWNLOAD_PATH" "$ASDF_INSTALL_PATH"

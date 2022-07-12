@@ -8,9 +8,15 @@ plugin_dir=$(dirname "$(dirname "$current_script_path")")
 # shellcheck source=../lib/utils.bash
 source "${plugin_dir}/lib/utils.bash"
 
-function download_source() {
+function download_version() {
   local version=$1
   local download_path=$2
+
+  local platform
+  platform=$(get_platform)
+
+  local tar_url
+  tar_url=$(get_tar_url "$version" "$platform")
 
   local source_url
   source_url=$(get_source_url "$version")
@@ -20,15 +26,11 @@ function download_source() {
   trap "rm -rf $tmpdir" EXIT
 
   (
-    mkdir -p "$download_path"
+    echo "Downloading pbkit v$version binaries from $source_url"
 
-    echo "Downloading source from $source_url"
-    curl -sSfLo "$tmpdir/archive.zip" "$source_url" || fail "Couldn't download source code from $source_url"
-
-    unzip -q "$tmpdir/archive.zip" -d "$tmpdir"
-
-    mv $tmpdir/* "$download_path/"
-  ) || (rm -rf "$download_path"; exit 1)
+    curl -sSfLo "$tmpdir/pbkit.tar" "$tar_url"
+    tar xf "$tmpdir/pbkit.tar" -C "$download_path"
+  ) || (rm -rf "$download_path"; fail "Failed to download pbkit v$version")
 }
 
-download_source "$ASDF_INSTALL_VERSION" "$ASDF_DOWNLOAD_PATH"
+download_version "$ASDF_INSTALL_VERSION" "$ASDF_DOWNLOAD_PATH"

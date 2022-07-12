@@ -2,7 +2,7 @@
 
 GITHUB_REPO="https://github.com/pbkit/pbkit"
 
-cmd="curl -s"
+cmd="curl -fsSL"
 if [ -n "${GITHUB_API_TOKEN:-}" ]; then
  cmd="$cmd -H 'Authorization: token $GITHUB_API_TOKEN'"
 fi
